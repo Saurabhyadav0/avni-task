@@ -22,15 +22,17 @@ app.use(
   })
 );
 
+app.get("/", (req, res) => res.send("Mini Drive API is running"));
+
 app.use("/api/auth", authRoutes);
 app.use("/api/files", fileRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use(cors({
-    origin: [          
-      process.env.FRONTEND_URL         
-    ],
-    credentials: true
+  origin: [
+    process.env.FRONTEND_URL
+  ],
+  credentials: true
 }));
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
