@@ -2,6 +2,7 @@ import { cloudinary } from "../config/cloudinary.js";
 import File from "../models/file.js";
 import Notification from "../models/Notification.js";
 import User from "../models/users.js";
+import { sendDocumentShareEmail } from "../services/emailService.js";
 export const uploadFile = async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ message: "No file uploaded" });
@@ -53,8 +54,8 @@ export const getFile = async (req, res) => {
 
     const sharedUser = userId
       ? file.sharedWith.find(
-          (s) => s.user?._id.toString() === userId.toString()
-        )
+        (s) => s.user?._id.toString() === userId.toString()
+      )
       : null;
 
     // Strict Access Gate
@@ -158,6 +159,23 @@ export const grantAccess = async (req, res) => {
       message: `Access granted (${role}) for ${file.name}`,
     });
 
+    // Get User Details for Email
+    const recipientUser = await User.findById(userId);
+
+    if (recipientUser) {
+      // Send Email Notification
+      try {
+        await sendDocumentShareEmail({
+          to: recipientUser.email,
+          document: file,
+          role: role || 'view',
+          inviter: req.user,
+        });
+      } catch (emailError) {
+        console.error("Failed to send email:", emailError);
+      }
+    }
+
     res.json({ message: "Access granted!" });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -248,6 +266,19 @@ export const shareFile = async (req, res) => {
       type: "granted",
       message: `${req.user.name} shared a file with you: ${file.name} (${role})`,
     });
+
+    // Send Email Notification
+    try {
+      await sendDocumentShareEmail({
+        to: userToShare.email,
+        document: file,
+        role,
+        inviter: req.user,
+      });
+    } catch (emailError) {
+      console.error("Failed to send email:", emailError);
+      // Continue without failing the request
+    }
 
     res.json({ message: `Shared with ${userToShare.email} successfully!` });
   } catch (error) {
