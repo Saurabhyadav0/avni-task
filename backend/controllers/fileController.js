@@ -286,6 +286,21 @@ export const shareFile = async (req, res) => {
   }
 };
 
+// NEW: Get Shared Files
+export const getSharedFiles = async (req, res) => {
+  try {
+    const files = await File.find({
+      "sharedWith.user": req.user.id,
+    })
+      .populate("owner", "name email")
+      .sort({ updatedAt: -1 });
+
+    res.json(files);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const updateFile = async (req, res) => {
   try {
     const { name } = req.body;

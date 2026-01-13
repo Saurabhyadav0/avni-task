@@ -10,7 +10,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Cloud, LayoutDashboard, LogOut, User } from "lucide-react";
+import { Cloud, LayoutDashboard, LogOut, User, Users } from "lucide-react";
 import Notifications from "./Notifications";
 
 export default function Navbar() {
@@ -37,6 +37,12 @@ export default function Navbar() {
                                     </Button>
                                 </Link>
                             )}
+                            <Link to="/shared">
+                                <Button variant="ghost" size="sm" className="hidden md:flex gap-2">
+                                    <Users className="h-4 w-4" />
+                                    Shared with me
+                                </Button>
+                            </Link>
                             <Notifications />
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
@@ -67,6 +73,12 @@ export default function Navbar() {
                                         <Link to="/" className="cursor-pointer w-full flex items-center">
                                             <Cloud className="mr-2 h-4 w-4" />
                                             My Files
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link to="/shared" className="cursor-pointer w-full flex items-center">
+                                            <Users className="mr-2 h-4 w-4" />
+                                            Shared with me
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />

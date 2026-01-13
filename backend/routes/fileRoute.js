@@ -13,6 +13,7 @@ import {
   updateFile,
   updateGeneralAccess,
   manageUserAccess,
+  getSharedFiles,
 } from "../controllers/fileController.js";
 import validateToken from "../middlewares/authmiddleware.js";
 import optionalAuth from "../middlewares/optionalAuth.js";
@@ -23,6 +24,7 @@ const upload = multer({ storage });
 router.post("/upload", validateToken, upload.single("file"), uploadFile);
 router.get("/myfiles", validateToken, getMyFiles);
 router.delete("/:id", validateToken, deleteFile);
+router.get("/shared", validateToken, getSharedFiles);
 
 router.get("/:id", optionalAuth, getFile);
 router.post("/:id/request", validateToken, requestAccess);

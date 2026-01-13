@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Home from "./pages/Home";
 import AdminDashboard from "./pages/AdminDashboard";
+import SharedWithMe from "./pages/SharedWithMe";
 import FileView from "./pages/FileView";
 import Layout from "./components/Layout";
 
@@ -59,6 +60,14 @@ function App() {
           element={
             <Layout>
               <FileView />
+            </Layout>
+          }
+        />
+        <Route
+          path="/shared"
+          element={
+            <Layout>
+              <SharedWithMe />
             </Layout>
           }
         />
