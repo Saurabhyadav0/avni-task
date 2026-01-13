@@ -5,13 +5,13 @@ const MAIL_FROM = process.env.MAIL_FROM || process.env.MAIL_USER;
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
 
 const sendDocumentShareEmail = async ({ to, document, role, inviter }) => {
-    if (!transporter) {
-        throw new Error('Email transporter is not configured');
-    }
+  if (!transporter) {
+    throw new Error('Email transporter is not configured');
+  }
 
-    const documentUrl = `${CLIENT_URL}/file/${document._id}`;
+  const documentUrl = `${CLIENT_URL}/file/${document._id}`;
 
-    const html = `
+  const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <h2 style="color: #2563eb;">Mini Drive</h2>
       <p>Hi there,</p>
@@ -37,21 +37,21 @@ const sendDocumentShareEmail = async ({ to, document, role, inviter }) => {
     </div>
   `;
 
-    const message = {
-        from: `"Mini Drive" <${MAIL_FROM}>`,
-        to,
-        subject: `${inviter?.name || 'A user'} shared "${document.name}" with you`,
-        html,
-    };
+  const message = {
+    from: MAIL_FROM.includes('<') ? MAIL_FROM : `"Mini Drive" <${MAIL_FROM}>`,
+    to,
+    subject: `${inviter?.name || 'A user'} shared "${document.name}" with you`,
+    html,
+  };
 
-    try {
-        const info = await sendMail(message);
-        logger.info(`Document share email sent: ${info.messageId}`, { service: 'mini-drive-mailer', to });
-        return info;
-    } catch (error) {
-        logger.error(`Error sending email: ${error.message}`, { service: 'mini-drive-mailer', error });
-        throw error;
-    }
+  try {
+    const info = await sendMail(message);
+    logger.info(`Document share email sent: ${info.messageId}`, { service: 'mini-drive-mailer', to });
+    return info;
+  } catch (error) {
+    logger.error(`Error sending email: ${error.message}`, { service: 'mini-drive-mailer', error });
+    throw error;
+  }
 };
 
 export { sendDocumentShareEmail };
