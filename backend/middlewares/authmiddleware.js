@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
 
-const validateToken = (req, res, next) => {
+import User from "../models/users.js";
+
+const validateToken = async (req, res, next) => {
   try {
     const token = req.cookies.token;
 
@@ -9,7 +11,15 @@ const validateToken = (req, res, next) => {
     }
 
     const verified = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = verified;
+
+    // Fetch full user details from database
+    const user = await User.findById(verified.id).select("-password");
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    req.user = user;
     next();
   } catch (err) {
     res.status(401).json({ message: "Invalid Token" });
