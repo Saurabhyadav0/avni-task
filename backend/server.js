@@ -12,6 +12,7 @@ dotenv.config();
 connectDB();
 
 const app = express();
+app.set("trust proxy", 1); // Required for Render to correctly handle secure cookies
 
 app.use(express.json());
 app.use(cookieParser());
